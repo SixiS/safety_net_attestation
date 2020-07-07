@@ -35,6 +35,7 @@ module SafetyNetAttestation
         certificate_chain.first.public_key
       end
 
+      verify_success(response)
       verify_certificate_subject(certificate_chain.first)
       verify_nonce(response, nonce)
       verify_timestamp(response, timestamp_leeway, time)
@@ -87,6 +88,12 @@ module SafetyNetAttestation
     end
 
     private
+
+    def verify_success(response)
+      if response["error"]
+        raise AttestationError, response["error"]
+      end
+    end
 
     def verify_certificate_subject(certificate)
       common_name = certificate.subject.to_a.assoc("CN")

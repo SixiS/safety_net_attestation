@@ -6,4 +6,5 @@ module SafetyNetAttestation
   class NonceMismatchError < Error; end
   class TimestampError < Error; end
   class CertificateSubjectError < Error; end
+  class AttestationError < Error; end
 end

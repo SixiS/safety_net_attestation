@@ -7,7 +7,7 @@ module SafetyNetAttestation
     unless OpenSSL.singleton_class.method_defined?(:fixed_length_secure_compare)
       refine OpenSSL.singleton_class do
         def fixed_length_secure_compare(a, b) # rubocop:disable Naming/UncommunicativeMethodParamName
-          raise ArgumentError, "inputs must be of equal length" unless a.bytesize == b.bytesize
+          raise ArgumentError, "inputs must be of equal length" unless a&.bytesize == b&.bytesize
 
           # borrowed from Rack::Utils
           l = a.unpack("C*")
