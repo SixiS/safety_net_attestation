@@ -125,4 +125,23 @@ RSpec.describe SafetyNetAttestation::Statement do
       expect(subject.certificate_chain).to all(be_kind_of(OpenSSL::X509::Certificate))
     end
   end
+
+  context "2021 example JWT" do
+    let(:response) { File.read(File.join(__dir__, "july-2021-example-jwt.txt")) }
+    let(:nonce) { "bm9uY2U=" }
+    let(:current_time) { Time.utc(2021, 5, 19, 19, 32, 15) }
+
+    subject { described_class.new(response).verify(nonce, time: current_time) }
+
+    it "returns itself and allows access to reader methods when everything is valid", :aggregate_failures do
+      expect(subject).to be_a(described_class)
+
+      expect(subject.cts_profile_match?).to be false
+      expect(subject.basic_integrity?).to be false
+      expect(subject.error).to be_nil
+      expect(subject.advice).to be_nil
+      expect(subject.certificate_chain).not_to be_empty
+      expect(subject.certificate_chain).to all(be_kind_of(OpenSSL::X509::Certificate))
+    end
+  end
 end
